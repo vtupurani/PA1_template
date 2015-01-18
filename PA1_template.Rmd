@@ -1,0 +1,134 @@
+---
+output: word_document
+---
+Read the data from the file
+
+```{r}
+activity <- read.csv("C:/Users/Vyjayanthi/Desktop/activity.csv")
+summary(activity)
+head(activity)
+library(lattice)
+activity$date <- as.Date(activity$date, "%Y-%m-%d")
+```
+
+To draw the histogram of total no. of steps taken
+```{r}
+totalSteps <- aggregate(steps ~ date, data = activity, sum, na.rm = TRUE)
+summary(totalSteps)
+hist(totalSteps$steps, 
+     main = "Total steps by day", 
+     xlab = "day", 
+     ylab = "Interval",
+     col = "green")
+```
+
+The mean of the total steps taken
+```{r}
+mean(totalSteps$steps)
+```
+
+
+The median of the total steps taken
+```{r}
+median(totalSteps$steps)
+```
+
+```{r}
+steps <- rep(NA, 61)
+day <- rep("NA", 61)
+stepsday <- tapply(activity$steps, activity$date, sum, na.rm = T)
+length(stepsday)
+```
+
+
+```{r}
+
+for (i in 1:61) {
+    steps[i] <- stepsday[[i]]
+    day[i] <- names(stepsday)[i]
+}
+```
+
+
+```{r}
+dataFrame <- data.frame(day, steps)
+summary(dataFrame)
+head(dataFrame)
+```
+
+```{r}
+hist(dataFrame$steps, main = "Total steps by day", 
+     xlab = "day", 
+     ylab= "Interval",
+     col = "green")
+```
+
+
+time series plot of the steps taken with 5 min. interval with average steps taken 
+
+```{r}
+time_series <- tapply(activity$steps, activity$interval, mean, na.rm = TRUE)
+
+plot(row.names(time_series), time_series, type = "l", 
+     main = "Average number of steps taken", 
+     xlab = "5-min interval", 
+     ylab = "Average of all Days", 
+     col = "green")
+```
+ 
+Maximum no. of steps taken during 
+```{r}
+max_interval <- which.max(time_series)
+names(max_interval)
+```
+
+To impute missing values, first find out how many missing values are there 
+```{r}
+activityNA <- sum(is.na(activity))
+activityNA
+```
+
+Replace the missing value by mean in 5 min interval
+```{r}
+StepsAverage <- aggregate(steps ~ interval, data = activity, FUN = mean)
+fill_na <- numeric()
+for (i in 1:nrow(activity)) {
+    obs <- activity[i, ]
+    if (is.na(obs$steps)) {
+        steps <- subset(StepsAverage, interval == obs$interval)$steps
+    } else {
+        steps <- obs$steps
+    }
+    fill_na <- c(fill_na, steps)
+}
+```
+
+New data set with all the filled in missing data
+```{r}
+activity2 <- activity
+activity2$steps <- fill_na
+head(activity2)
+totalSteps2 <- aggregate(steps ~ date, data = activity2, sum, na.rm = TRUE)
+head(totalSteps2)
+```
+
+Histogram of total no. of steps taken each day
+```{r}
+hist(totalSteps2$steps, main = "Total steps by day", 
+     xlab = "day", 
+     col = "green")
+```
+
+
+Calculate mean of total steps taken per day
+```{r}
+mean(totalSteps2$steps)
+```
+
+Calculte median of total steps taken per day
+```{r}
+median(totalSteps2$steps)
+```
+
+Differences in activity patterns between weekdays and weekends
+ 
