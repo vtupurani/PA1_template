@@ -33,38 +33,8 @@ The median of the total steps taken
 median(totalSteps$steps)
 ```
 
-```{r}
-steps <- rep(NA, 61)
-day <- rep("NA", 61)
-stepsday <- tapply(activity$steps, activity$date, sum, na.rm = T)
-length(stepsday)
-```
-
-
-```{r}
-
-for (i in 1:61) {
-    steps[i] <- stepsday[[i]]
-    day[i] <- names(stepsday)[i]
-}
-```
-
-
-```{r}
-dataFrame <- data.frame(day, steps)
-summary(dataFrame)
-head(dataFrame)
-```
-
-```{r}
-hist(dataFrame$steps, main = "Total steps by day", 
-     xlab = "day", 
-     ylab= "Interval",
-     col = "green")
-```
-
-
-time series plot of the steps taken with 5 min. interval with average steps taken 
+ 
+Time series plot of the steps taken with 5 min. interval with average steps taken 
 
 ```{r}
 time_series <- tapply(activity$steps, activity$interval, mean, na.rm = TRUE)
