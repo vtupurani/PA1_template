@@ -4,7 +4,7 @@ output: word_document
 Read the data from the file
 
 ```{r}
-activity <- read.csv("C:/Users/Vyjayanthi/Desktop/activity.csv")
+activity <- read.csv("...Desktop/activity.csv")
 summary(activity)
 head(activity)
 library(lattice)
